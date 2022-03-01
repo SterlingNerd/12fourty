@@ -17,44 +17,44 @@ public class MoveFolderValidator
 	public Result ValidateMoveFolderItem(User currentUser, IFolderItem item, long? targetFolderId)
 	{
 		Result result = new();
-		bool isOwner = item.IsOwner(currentUser);
-		bool isAdminMovingSharedItem = IsAdminMovingSharedItem(currentUser, item);
+		bool isSourceOwner = item.IsOwner(currentUser);
+		bool isSourceShared = item.IsShared;
 
-		if (!isOwner && !isAdminMovingSharedItem)
+		if (!isSourceOwner && !isSourceShared)
 		{
 			result.AddErrorByCode(FolderItemErrorCode.MoveItemOrFolderCreatedByAnotherUser);
 		}
 
-		bool isAdminMovingToSharedFolder;
+		bool isAdmin = currentUser.RoleId == RoleId.Admin;
+		if (!isSourceOwner && !isAdmin)
+		{
+			result.AddErrorByCode(FolderItemErrorCode.MoveItemOrFolderCreatedByAnotherUser);
+		}
+
+		bool isDestinationShared;
 		if (targetFolderId.HasValue)
 		{
 			IFolderItem targetFolder = customReportFolderService.Get(targetFolderId.Value);
 
-			isOwner = targetFolder.IsOwner(currentUser);
-			isAdminMovingToSharedFolder = IsAdminMovingSharedItem(currentUser, targetFolder);
+			bool isDestinationOwner = targetFolder.IsOwner(currentUser);
+			isDestinationShared = targetFolder.IsShared;
 
-			if (!isOwner && !isAdminMovingToSharedFolder)
+			if (!isDestinationOwner && !isDestinationShared)
 			{
 				result.AddErrorByCode(FolderItemErrorCode.MoveItemOrFolderToFolderCreatedByAnotherUser);
 			}
 		}
 		else
 		{
-			// root folder
-			isAdminMovingToSharedFolder = !isOwner && currentUser.RoleId == RoleId.Admin;
+			// root folder is by definition, shared.
+			isDestinationShared = true;
 		}
 
-		if (isAdminMovingSharedItem && !isAdminMovingToSharedFolder)
+		if (isAdmin && !isDestinationShared)
 		{
 			result.AddErrorByCode(FolderItemErrorCode.SharedItemMayOnlyMoveToSharedFolder);
 		}
 
 		return result;
-	}
-
-	private static bool IsAdminMovingSharedItem(User currentUser, IFolderItem item)
-	{
-		bool isAdminMovingSharedItem =  currentUser.RoleId == RoleId.Admin && item.IsShared;
-		return isAdminMovingSharedItem;
 	}
 }
