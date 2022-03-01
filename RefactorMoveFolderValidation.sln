@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RefactorMoveFolderValidation", "RefactorMoveFolderValidation\RefactorMoveFolderValidation.csproj", "{C64E44A3-08AB-4487-A5B0-77075A61543B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RefactorMoveFolderValidationTests", "RefactorMoveFolderValidationTests\RefactorMoveFolderValidationTests.csproj", "{F65262FC-6C37-416E-965A-B16674D9D42E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{92739CB0-065F-46AD-8591-E012A97E8E22}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C64E44A3-08AB-4487-A5B0-77075A61543B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C64E44A3-08AB-4487-A5B0-77075A61543B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C64E44A3-08AB-4487-A5B0-77075A61543B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C64E44A3-08AB-4487-A5B0-77075A61543B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F65262FC-6C37-416E-965A-B16674D9D42E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F65262FC-6C37-416E-965A-B16674D9D42E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F65262FC-6C37-416E-965A-B16674D9D42E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F65262FC-6C37-416E-965A-B16674D9D42E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {52BAA526-2DD8-427E-84BF-DC6E7146BB1B}
+	EndGlobalSection
+EndGlobal
