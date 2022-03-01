@@ -82,7 +82,7 @@ public class RefactorMoveFolderValidationTests
 
 	// Any user may move their own folder item, but if moving to a non-shared folder, the user must own that folder
 	[TestMethod]
-	public void ValidateMoveFolderItem_OwnerMovingToOwnPrivateFolder_Success()
+	public void ValidateMoveFolderItem_OwnerMovingOwnItemToOwnPrivateFolder_Success()
 	{
 		FakeFolderItem folderItem = new() {OwnerId = 1};
 		User user = new() {Id = 1, RoleId = RoleId.Student};
@@ -92,6 +92,19 @@ public class RefactorMoveFolderValidationTests
 			.IsSuccessful
 			.Should()
 			.Be(true);
+	}
+	// Any user may move their own folder item, but if moving to a non-shared folder, the user must own that folder
+	[TestMethod]
+	public void ValidateMoveFolderItem_OwnerMovingOthersItemToOwnPrivateFolder_Success()
+	{
+		FakeFolderItem folderItem = new() {OwnerId = 2};
+		User user = new() {Id = 1, RoleId = RoleId.Student};
+		mockICustomReportFolderService.Setup(x => x.Get(It.IsAny<long>())).Returns(new FakeFolderItem {OwnerId = 1, IsShared = false});
+
+		_moveFolderValidator.ValidateMoveFolderItem(user, folderItem, 10)
+			.IsSuccessful
+			.Should()
+			.Be(false);
 	}
 
 	// Any user may move their own folder item
