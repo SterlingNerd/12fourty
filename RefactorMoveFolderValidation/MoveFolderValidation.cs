@@ -58,8 +58,7 @@ public class MoveFolderValidation
 
 	private bool IsAdminMovingSharedItem(IFolderItem item)
 	{
-		bool isOwner = item.IsOwner(currentUser);
-		bool isAdminMovingSharedItem = !isOwner && currentUser.RoleId == RoleId.Admin && item.IsShared;
+		bool isAdminMovingSharedItem =  currentUser.RoleId == RoleId.Admin && item.IsShared;
 		return isAdminMovingSharedItem;
 	}
 }

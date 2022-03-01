@@ -67,10 +67,10 @@ public class RefactorMoveFolderValidationTests
 	[DataRow(true, true, true, true)]
 	public void ValidateMoveFolderItem_AdminMovingPrivateItem_Invalid(bool isAdmin, bool sourceShared, bool destinationShared, bool expected)
 	{
-		FakeFolderItem folderItem = new() {OwnerId = 1, IsShared = false};
+		FakeFolderItem folderItem = new() {OwnerId = 1, IsShared = sourceShared};
 		moveFolderValidation = new MoveFolderValidation(new User {Id = 42, RoleId = isAdmin ? RoleId.Admin : RoleId.Student}, mockICustomReportFolderService.Object);
 
-		mockICustomReportFolderService.Setup(x => x.Get(It.IsAny<long>())).Returns(new FakeFolderItem {OwnerId = 23, IsShared = false});
+		mockICustomReportFolderService.Setup(x => x.Get(It.IsAny<long>())).Returns(new FakeFolderItem {OwnerId = 23, IsShared = destinationShared});
 
 		moveFolderValidation.ValidateMoveFolderItem(folderItem, 10)
 			.IsSuccessful
@@ -96,9 +96,9 @@ public class RefactorMoveFolderValidationTests
 	[TestMethod]
 	public void ValidateMoveFolderItem_OwnerMovingToOwnSharedFolder_Success()
 	{
-		FakeFolderItem folderItem = new() {OwnerId = 1};
+		FakeFolderItem folderItem = new() {OwnerId = 1, IsShared = false};
 
-		mockICustomReportFolderService.Setup(x => x.Get(It.IsAny<long>())).Returns(new FakeFolderItem {OwnerId = 23, IsShared = true});
+		mockICustomReportFolderService.Setup(x => x.Get(It.IsAny<long>())).Returns(new FakeFolderItem {OwnerId = 1, IsShared = false});
 
 		moveFolderValidation.ValidateMoveFolderItem(folderItem, 10)
 			.IsSuccessful
