@@ -2,27 +2,23 @@
 
 namespace RefactorMoveFolderValidation;
 
-public class MoveFolderValidation
+public class MoveFolderValidator
 {
-	private readonly User currentUser;
 	private readonly ICustomReportFolderService customReportFolderService;
 
-	public MoveFolderValidation(
-		User currentUser,
-		ICustomReportFolderService customReportFolderService)
+	public MoveFolderValidator(ICustomReportFolderService customReportFolderService)
 	{
-		this.currentUser = currentUser;
 		this.customReportFolderService = customReportFolderService;
 	}
 
 	/// <summary>
 	/// Validates whether the user is permitted to move the item into the target folder.
 	/// </summary>
-	public Result ValidateMoveFolderItem(IFolderItem item, long? targetFolderId)
+	public Result ValidateMoveFolderItem(User currentUser, IFolderItem item, long? targetFolderId)
 	{
 		Result result = new();
 		bool isOwner = item.IsOwner(currentUser);
-		bool isAdminMovingSharedItem = IsAdminMovingSharedItem(item);
+		bool isAdminMovingSharedItem = IsAdminMovingSharedItem(currentUser, item);
 
 		if (!isOwner && !isAdminMovingSharedItem)
 		{
@@ -35,7 +31,7 @@ public class MoveFolderValidation
 			IFolderItem targetFolder = customReportFolderService.Get(targetFolderId.Value);
 
 			isOwner = targetFolder.IsOwner(currentUser);
-			isAdminMovingToSharedFolder = IsAdminMovingSharedItem(targetFolder);
+			isAdminMovingToSharedFolder = IsAdminMovingSharedItem(currentUser, targetFolder);
 
 			if (!isOwner && !isAdminMovingToSharedFolder)
 			{
@@ -56,7 +52,7 @@ public class MoveFolderValidation
 		return result;
 	}
 
-	private bool IsAdminMovingSharedItem(IFolderItem item)
+	private static bool IsAdminMovingSharedItem(User currentUser, IFolderItem item)
 	{
 		bool isAdminMovingSharedItem =  currentUser.RoleId == RoleId.Admin && item.IsShared;
 		return isAdminMovingSharedItem;
