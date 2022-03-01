@@ -7,7 +7,7 @@ namespace RefactorMoveFolderValidation;
 public class Result
 {
 	public ReadOnlyCollection<string> Errors { get; private set; } = new(Array.Empty<string>());
-	public bool IsSuccessful => Errors.Any();
+	public bool IsSuccessful => Errors.None();
 
 	public void AddErrorByCode(string code)
 	{
