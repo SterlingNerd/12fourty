@@ -1,13 +1,17 @@
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace RefactorMoveFolderValidation;
 
 public class Result
 {
-	public bool IsSuccessful { get; set; } = true;
+	public ReadOnlyCollection<string> Errors { get; private set; } = new(Array.Empty<string>());
+	public bool IsSuccessful => Errors.Any();
 
 	public void AddErrorByCode(string code)
 	{
-		IsSuccessful = false;
+		// This is likely way overkill, but it does prevent any external modifications of the errors collection.
+		Errors = new ReadOnlyCollection<string>(Errors.Union(new[] {code}).ToList());
 	}
 }
