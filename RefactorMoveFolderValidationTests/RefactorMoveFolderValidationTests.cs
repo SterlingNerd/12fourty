@@ -1,39 +1,37 @@
+using System;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Moq;
+
 using RefactorMoveFolderValidation;
 
-namespace RefactorMoveFolderValidationTests {
-    [TestClass]
-    public class RefactorMoveFolderValidationTests {
-        private Mock<ICustomReportFolderService> mockICustomReportFolderService;
-        private MoveFolderValidation moveFolderValidation;
+namespace RefactorMoveFolderValidationTests;
 
-        [TestInitialize]
-        public void Init() {
-            this.mockICustomReportFolderService = new Mock<ICustomReportFolderService>();
-            this.moveFolderValidation = new MoveFolderValidation(new User { Id = 1 }, this.mockICustomReportFolderService.Object);
-        }
+[TestClass]
+public class RefactorMoveFolderValidationTests
+{
+	#region Setup/Teardown
 
-        [TestMethod]
-        public void ValidateMoveFolderItem_OwnerMovingToOwnPrivateFolder_Success() {
-            var folderItem = new FolderItem {
-                OwnerId = 1,
-            };
+	[TestInitialize]
+	public void Init()
+	{
+		mockICustomReportFolderService = new Mock<ICustomReportFolderService>();
+		moveFolderValidation = new MoveFolderValidation(new User {Id = 1}, mockICustomReportFolderService.Object);
+	}
 
-            this.mockICustomReportFolderService.Setup(x => x.Get(It.IsAny<long>())).Returns(new FolderItem {
-                OwnerId = 1,
-            });
+	#endregion
 
-            Assert.IsTrue(this.moveFolderValidation.ValidateMoveFolderItem(folderItem, 10).IsSuccessful);
-        }
-    }
+	private Mock<ICustomReportFolderService> mockICustomReportFolderService;
+	private MoveFolderValidation moveFolderValidation;
 
-    public class FolderItem : IFolderItem {
-        public long OwnerId { get; set; }
-        public bool IsShared { get; set; }
-        public bool IsOwner(User user) {
-            return user.Id == this.OwnerId;
-        }
-    }
+	[TestMethod]
+	public void ValidateMoveFolderItem_OwnerMovingToOwnPrivateFolder_Success()
+	{
+		FolderItem folderItem = new FolderItem {OwnerId = 1};
 
+		mockICustomReportFolderService.Setup(x => x.Get(It.IsAny<long>())).Returns(new FolderItem {OwnerId = 1});
+
+		Assert.IsTrue(moveFolderValidation.ValidateMoveFolderItem(folderItem, 10).IsSuccessful);
+	}
 }
