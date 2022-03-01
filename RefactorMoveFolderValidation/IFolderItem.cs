@@ -4,6 +4,6 @@ namespace RefactorMoveFolderValidation;
 
 public interface IFolderItem
 {
-	bool IsShared { get; set; }
+	bool IsShared { get; }
 	bool IsOwner(User user);
 }

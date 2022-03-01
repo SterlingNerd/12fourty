@@ -31,23 +31,13 @@ public class MoveFolderValidator
 			result.AddErrorByCode(FolderItemErrorCode.MoveItemOrFolderCreatedByAnotherUser);
 		}
 
-		bool isDestinationShared;
-		if (targetFolderId.HasValue)
-		{
-			IFolderItem targetFolder = customReportFolderService.Get(targetFolderId.Value);
+		IFolderItem destination = GetDestination(targetFolderId);
+		bool isDestinationOwner = destination.IsOwner(currentUser);
+		bool isDestinationShared = destination.IsShared;
 
-			bool isDestinationOwner = targetFolder.IsOwner(currentUser);
-			isDestinationShared = targetFolder.IsShared;
-
-			if (!isDestinationOwner && !isDestinationShared)
-			{
-				result.AddErrorByCode(FolderItemErrorCode.MoveItemOrFolderToFolderCreatedByAnotherUser);
-			}
-		}
-		else
+		if (!isDestinationOwner && !isDestinationShared)
 		{
-			// root folder is by definition, shared.
-			isDestinationShared = true;
+			result.AddErrorByCode(FolderItemErrorCode.MoveItemOrFolderToFolderCreatedByAnotherUser);
 		}
 
 		if (isAdmin && !isDestinationShared)
@@ -56,5 +46,18 @@ public class MoveFolderValidator
 		}
 
 		return result;
+	}
+
+	private IFolderItem GetDestination(long? targetFolderId)
+	{
+		// I would move this logic into the folder service. Essentially making the folder service always return an IFolderItem
+		if (targetFolderId.HasValue)
+		{
+			return customReportFolderService.Get(targetFolderId.Value);
+		}
+		else
+		{
+			return RootFolderItem.Instance;
+		}
 	}
 }
